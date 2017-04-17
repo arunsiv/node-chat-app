@@ -7,9 +7,19 @@
 </head>
 
 <body>
-    <p>Welcome to chat application</p>
+    <h2><p>Welcome to chat application</p></h2>
+    <hr/>
+
+    <ol id='messages'></ol>
+
+    <hr/><br/>
+    <form id="message-form">
+        <input type="text" name="message" placeholder="Enter the text"/>
+        <button>Send</button>
+    </form>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/lib/jquery-3.2.1.min.js"></script>
     <script src="/js/index.js"></script>
 
 </body>

@@ -9,29 +9,35 @@ const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 
 var app = express();
+
+//Use socket.io with server
 var server = http.createServer(app);
 var io = socketIO(server);
 
 //Static Middleware
 app.use(express.static(publicPath));
 
-//
+//Socket IO events
+//Connection event
 io.on('connection', (socket) => {
     console.log('User connected');
 
-    //Emit an event for welcoming new user
+    //Send welcome message when a new user joins
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to Chat App!!!'));
 
-    //Broadcast an event when a new user joins
+    //Broadcast when a new user joins
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined...'));
 
-    //Listen for an event when an user sends a new message
-    socket.on('createMessage', function(newMessage) {
+    //Listen for new message from user
+    socket.on('createMessage', (newMessage, callback) => {
         console.log('New Message: ', newMessage);
 
+        //Send the new message to all the users connected to the server
         //IO.emit emits the event to every client
-        //Send the new message to all the users
         io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
+
+        //Ack from server
+        callback('Got the message!');
 
         //broadcast will broadcast the event to all the clients except for the client
         //connect on this socket
@@ -43,6 +49,7 @@ io.on('connection', (socket) => {
 
     });
 
+    //Disconnet event
     socket.on('disconnect', () => {
         console.log('User disconnected');
     });
