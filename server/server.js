@@ -3,7 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -37,16 +37,15 @@ io.on('connection', (socket) => {
         io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
 
         //Ack from server
-        callback('Got the message!');
+        callback('Server received the message!');
+    });
 
-        //broadcast will broadcast the event to all the clients except for the client
-        //connect on this socket
-        // socket.broadcast.emit('newMessage', {
-        //     from: newMessage.from,
-        //     text: newMessage.text,
-        //     createdAt: new Date().getTime()
-        // });
+    //Listen for new location message from user
+    socket.on('createLocationMessage', (coords) => {
+        console.log('New Location Message: ', coords);
 
+        //Send the new message to all the users connected to the server
+        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
     });
 
     //Disconnet event
