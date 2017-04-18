@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
         io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
 
         //Ack from server
-        callback('Server received the message!');
+        callback();
     });
 
     //Listen for new location message from user
