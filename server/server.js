@@ -56,18 +56,30 @@ io.on('connection', (socket) => {
 
     //Listen for new message from user
     socket.on('createMessage', (newMessage, callback) => {
-        //Send the new message to all the users connected to the server
-        //IO.emit emits the event to every client
-        io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
+        //Get the user sent this message using the id
+        var user = users.getUser(socket.id);
 
+        //Check if the user exists and the message is valid
+        if (user && isRealString(newMessage.text)) {
+            //Send the new message to all the users in the room
+            //io.emit emits the event to every user
+            //io.to().emit the event to only the users in the room
+            io.to(user.room).emit('newMessage', generateMessage(user.name, newMessage.text));
+        }
         //Ack from server
         callback();
     });
 
     //Listen for new location message from user
     socket.on('createLocationMessage', (coords) => {
-        //Send the new message to all the users connected to the server
-        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+        //Get the user sent this message using the id
+        var user = users.getUser(socket.id);
+
+        //Check if the user exists and the message is valid
+        if (user) {
+            //Send the new message to all the users in the room
+            io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+        }
     });
 
     //Disconnet event
