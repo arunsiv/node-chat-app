@@ -28,6 +28,10 @@ class Users {
         return this.users.filter((user) => user.id === id)[0];
     }
 
+    checkUser(name) {
+        return this.users.filter((user) => user.name === name)[0];
+    }
+
     getUserList(room) {
         // var users = this.users.filter((user) => {
         //     return user.room === room;

@@ -30,6 +30,8 @@ io.on('connection', (socket) => {
         if (!isRealString(params.name) || !isRealString(params.room)) {
             //error, call callback function with error param
             return callback('Name and Room Name are required');
+        } else if (users.checkUser(params.name)) {
+            return callback('Name already exists. Choose a new name!');
         }
 
         //no error, user joins the chat room

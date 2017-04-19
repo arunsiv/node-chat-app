@@ -18,7 +18,7 @@ function scrollToBottom() {
 };
 
 socket.on('connect', function() {
-    var params = jQuery.deparam(window.location.search);
+    var params = convertToLowercase(jQuery.deparam(window.location.search));
 
     socket.emit('join', params, function(error) {
         if (error) {
@@ -105,3 +105,13 @@ locationButton.on('click', function() {
         locationButton.removeAttr('disabled').text('Send Location');
     });
 });
+
+function convertToLowercase(params) {
+    var name = params.name;
+    var room = params.room.toLowerCase();
+
+    return {
+        name,
+        room
+    }
+};
